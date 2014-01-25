@@ -1,0 +1,44 @@
+{% extends "layout.html" %}
+{% block body %}
+
+<!-- Sign In Button -->
+{% if session.logged_in %}
+<form action="{{ url_for('logout') }}"> <button id="signinbtn" class="btn btn-default" type=submit>Sign Out</button></form>
+{% else %}
+<form action="{{ url_for('show_login') }}"> <button id="signinbtn" class="btn btn-default" type=submit>Sign In</button></form>
+{% endif %}
+
+</br>
+<!-- Water Use Icons -->
+<h1>How much water do you use...</h1>
+{% if not session.logged_in %}
+<div id="subtext"><small>Login to start keeping track!</small></div>
+{% endif %}
+<section id="wateruseicons">
+	<div class="row">
+	  <div style="margin: 10px" class="col-md-4 col-md-3">
+	    <a href="{{ url_for('show_dishwasherform') }}" class="thumbnail">
+	      <img src="{{ url_for('static', filename='DishWasher.jpg') }}">
+	    </a>
+	  </div>
+	  <div style="margin: 10px" class="col-md-4 col-md-3">
+	    <a href="{{ url_for('show_showerform') }}" class="thumbnail">
+	      <img src="{{ url_for('static', filename='LogInShowerTime.jpg') }}">
+	    </a>
+	  </div>
+	</div>
+	<div class="row">
+	  <div style="margin: 10px" class="col-md-4 col-md-3">
+	    <a href="{{ url_for('show_washerform') }}" class="thumbnail">
+	      <img src="{{ url_for('static', filename='Washer.jpg') }}">
+	    </a>
+	  </div>
+	  <div style="margin: 10px" class="col-md-4 col-md-3">
+	    <a href="{{ url_for('show_watergardenform') }}" class="thumbnail">
+	      <img src="{{ url_for('static', filename='WaterGarden.jpg') }}">
+	    </a>
+	  </div>
+	</div>
+</section>
+
+{% endblock %}

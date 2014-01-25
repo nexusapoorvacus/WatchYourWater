@@ -1,0 +1,11 @@
+{% extends "layout.html" %}
+{% block body %}
+<h1>How much water do you use when you take a shower?</h1>
+<form role="form" id="showerform" action="{{ url_for('recording_data', task='shower') }}" method=post name=showerform>
+  <div class="form-group">
+    <label for="showertime">How long was your shower (in minutes)?</label>
+    <input class="form-control" id="showertime" name="showertime" placeholder="Time Length">
+  </div>
+  <button type="submit" id="submit" class="btn btn-default">Submit</button>
+</form>
+{% endblock %}

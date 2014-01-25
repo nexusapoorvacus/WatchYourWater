@@ -1,0 +1,59 @@
+* {
+	margin: 0;
+	padding: 0;
+}
+
+#headerimg {
+	margin: 0;
+	padding: 0;
+}
+
+.nav {
+	padding-top: 0;
+	margin-top: 0;
+}
+
+#navbarelements li{
+	text-align: center;
+}
+
+#signinbtn {
+	float: right;
+	margin-right: 80px;
+}
+
+#wateruseicons{
+	margin-left: 200px;
+}
+
+h1{
+	text-align: center;
+}
+
+#subtext {
+	text-align: center;
+}
+
+.form-group {
+	margin-left: 400px;
+}
+
+.form-group input{
+	width: 500px;
+}
+
+#submit{
+	margin-left: 600px;
+}
+
+.flash{ 
+	background: #cee5F5; 
+	padding: 0.5em;
+    border: 1px solid #aacbe2; 
+}
+
+.table{
+	margin-right: 30px;
+	margin-left: 30px;
+	padding: 0;
+}

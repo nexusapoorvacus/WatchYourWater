@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+{% block body %}
+<h1>How much water do you use when you do the laundry?</h1>
+<form role="form" id="washerform" action="{{ url_for('recording_data', task='washer') }}" method=post name=washerform>
+  <div class="form-group">
+    <label for="washertime">How long did you run the washer for?</label>
+    <input class="form-control" id="washertime" name="washertime" placeholder="Time Length">
+  </div>
+  <div class="form-group">
+    <label for="washercycle">Cycle Level (Enter: Low, Medium, High)</label>
+    <input class="form-control" id="washercycle" name="washercycle" placeholder="Cycle Level">
+  </div>
+  <button type="submit" id="submit" class="btn btn-default">Submit</button>
+</form>
+{% endblock %}

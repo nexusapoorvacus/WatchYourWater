@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+{% block body %}
+<h1>How much water do you use when you water the garden?</h1>
+<form role="form" id="watergardenform" action="{{ url_for('recording_data', task='watergarden') }}" method=post name=watergardenform>
+  <div class="form-group">
+    <label for="watergardentime">How long did you water the garden for?</label>
+    <input class="form-control" id="watergardentime" name="watergardentime" placeholder="Time Length">
+  </div>
+  <div class="form-group">
+    <label for="watergardenlevel">Cycle Level (Enter: Low, Medium, High)</label>
+    <input class="form-control" id="watergardenlevel" name="watergardenlevel" placeholder="Cycle Level">
+  </div>
+  <button type="submit" id="submit" class="btn btn-default">Submit</button>
+</form>
+{% endblock %}
