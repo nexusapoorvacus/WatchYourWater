@@ -1,6 +1,7 @@
 {% extends "layout.html" %}
 {% block body %}
 <h1>Login</h1>
+<small>Username: admin, Password: default</small>
 <form role="form" id="loginform" action="{{ url_for('login') }}" method=post name=login>
   <div class="form-group">
     <label for="sessionusername">Username</label>
