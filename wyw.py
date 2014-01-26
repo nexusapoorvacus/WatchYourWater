@@ -1,6 +1,8 @@
 #all the imports
 import sqlite3
-from flask import Flask, request, session, g, redirect, url_for, abort, render_template, flash
+import json
+from collections import Counter
+from flask import Flask, request, session, g, redirect, url_for, abort, render_template, flash, jsonify
 from contextlib import closing
 
 DATABASE = 'wyw.db'
@@ -14,7 +16,7 @@ PASSWORD = 'default'
 SESSION_USERNAME = ''
 SESSION_PASSWORD = ''
 
-adminmode = False
+adminmode = True
 
 #creating the actual application
 app = Flask(__name__)
@@ -95,51 +97,57 @@ def show_log():
 
 @app.route('/log')
 def log():
-	cur = g.db.execute('select Username, Password, DishwasherTime, DishwasherCycle, WaterGardenTime, WaterGardenLevel, ShowerTime, WasherTime, WasherCycle, id from entries order by id desc')
-	entries = [dict(Username=row[0], Password=row[1], DishwasherTime=row[2], DishwasherCycle=row[3], WaterGardenTime=row[4], WaterGardenLevel=row[5], ShowerTime=row[6], WasherTime=row[7], WasherCycle=row[8], id=row[9]) for row in cur.fetchall()][::-1]
-	return render_template('log.html', entries=entries, Username=SESSION_USERNAME, adminmode = adminmode)
+	cur = g.db.execute('select Username, Password, currenttask, currenttime, currentproperty, id from entries order by id desc')
+	entries = [dict(Username=row[0], Password=row[1], currenttask=row[2], currenttime=row[3], currentproperty=row[4], id=row[5]) for row in cur.fetchall()][::-1]
+
+	#getting arrays for pie chart
+	ctlistnames = []
+	for i in range(len(entries)):
+		ctlistnames.append(entries[i]["currenttask"])
+	for i in range(len(ctlistnames)):
+		for j in range(i + 1, len(ctlistnames)):
+			if ctlistnames[i]< ctlistnames[j]:
+				ctlistnames[i], ctlistnames[j] = ctlistnames[j], ctlistnames[i]
+	lst = Counter(ctlistnames)
+	ctlistnames_short = lst.keys()
+	ctlistnumbers = lst.values()
+
+	return render_template('log.html', entries=entries, adminmode=adminmode, ctlistnames_short=json.dumps(ctlistnames_short),ctlistnames=json.dumps(ctlistnames), ctlistnumbers=json.dumps(ctlistnumbers))
 
 @app.route('/recording_data/<task>', methods=['GET', 'POST'])
 def recording_data(task):
 	if task == "dishwasher":
 		dishwashertime = request.form['dishwashertime']
 		dishwashercycle = request.form['dishwashercycle']
-		g.db.execute('update entries set DishwasherTime=?',[dishwashertime])
-		g.db.execute('update entries set DishwasherCycle=?',[dishwashercycle])
+		g.db.execute('insert into entries (Username, Password, currenttask, currenttime, currentproperty) values (?, ?, ?, ?, ?)', [SESSION_USERNAME, SESSION_PASSWORD, 'Dishwasher',dishwashertime, dishwashercycle])
 		g.db.commit()
-		return redirect(url_for('log'))
 	if task == 'shower':
 		showertime = request.form['showertime']
-		g.db.execute('update entries set ShowerTime=?',[showertime])
+		g.db.execute('insert into entries (Username, Password, currenttask, currenttime, currentproperty) values (?, ?, ?, ?, ?)', [SESSION_USERNAME, SESSION_PASSWORD, "Shower", showertime, ''])
 		g.db.commit()
 	if task == "watergarden":
 		watergardentime = request.form['watergardentime']
-		print(watergardentime, SESSION_USERNAME)
 		watergardenlevel = request.form['watergardenlevel']
-		g.db.execute('update entries set WaterGardenTime=?', [watergardentime])
-		g.db.execute('update entries set WaterGardenLevel=?',[watergardenlevel])
+		g.db.execute('insert into entries (Username, Password, currenttask, currenttime, currentproperty) values (?, ?, ?, ?, ?)', [SESSION_USERNAME, SESSION_PASSWORD, "Water Garden", watergardentime, watergardenlevel])
 		g.db.commit()
 	if task == "washer":
 		washertime = request.form['washertime']
 		washercycle = request.form['washercycle']
-		g.db.execute('update entries set WasherTime=?',[washertime])
-		g.db.execute('update entries set WasherCycle=?',[washercycle])
+		g.db.execute('insert into entries (Username, Password, currenttask, currenttime, currentproperty) values (?, ?, ?, ?, ?)', [SESSION_USERNAME, SESSION_PASSWORD, "Laundry", washertime, washercycle])
 		g.db.commit()
 	return redirect(url_for('log'))
 
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-	global SESSION_USERNAME, SESSION_PASSWORD
+	global SESSION_USERNAME, SESSION_PASSWORD, adminmode
 	error = None
 	if request.method == 'POST':
 		if request.form['username'] == app.config['USERNAME'] and request.form['password'] == app.config['PASSWORD']:
 			session['logged_in'] = True
 			adminmode = True
-			SESSION_USERNAME = USERNAME
-			SESSION_PASSWORD = PASSWORD
-			g.db.execute('insert into entries (Username, Password) values (?, ?)', [SESSION_USERNAME, SESSION_PASSWORD])
-			g.db.commit()
+			SESSION_USERNAME = 'admin'
+			SESSION_PASSWORD = request.form['password']
 			print('You are logged in as ADMIN')
 			return redirect(url_for('show_index'))
 		else:
@@ -151,8 +159,7 @@ def login():
 
 @app.route('/logout')
 def logout():
-	global SESSION_USERNAME, SESSION_PASSWORD
-	SESSION_USERNAME, SESSION_PASSWORD = '', ''
+	global adminmode
 	adminmode = False
 	session['logged_in'] = False
 	return redirect(url_for('show_index'))

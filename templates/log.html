@@ -5,28 +5,34 @@
 	<h1>This is your water log, Admin</h1>
 	{% endif %}
 
-	<table class="table">  
+  <table class="table">  
         <thead>  
-          <tr>  
-            <th>Date</th>  
-            <th>Watering Garden</th>  
-            <th>Laundry</th>  
-            <th>Dishwasher</th>
-            <th>Shower</th>   
+          <tr> 
+            <th>Activity</th>  
+            <th>Time</th>
+            <th>Level</th>   
           </tr>  
         </thead> 
         {% for entry in entries %} 
         <tbody>  
           <tr>  
-          	<td>Today</td>
-            <td>{{ entry.WaterGardenTime }} minutes (Level: {{ entry.WaterGardenLevel }})</td>  
-            <td>{{ entry.WasherTime }} minutes (Water Level: {{ entry.WasherCycle }})</td>  
-            <td>{{ entry.DishwasherTime }} minutes (Cycle: {{ entry.DishwasherCycle }})</td>  
-            <td>{{ entry.ShowerTime }} minutes</td>  
+            <td>{{ entry.currenttask }}</td>  
+            <td>{{ entry.currenttime }}</td>  
+            <td>{{ entry.currentproperty }}</td>  
           </tr>  
         </tbody>   
         {% endfor %}
-	</table>
+  </table>
+
+  </br>
+  <h1>Graphical Perspective</h1>
+
+  <script type="text/javascript">
+    var names = {{ ctlistnames_short|safe }};
+    var dataset = {{ ctlistnumbers|safe }};
+    
+  </script>
+
 {% endif %}
 
 {% endblock %}
