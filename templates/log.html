@@ -26,12 +26,8 @@
 
   </br>
   <h1>Graphical Perspective</h1>
-
-  <script type="text/javascript">
-    var names = {{ ctlistnames_short|safe }};
-    var dataset = {{ ctlistnumbers|safe }};
-    
-  </script>
+  
+  <iframe src="{{ url_for('show_bargraph') }}" height=360 width=650 frameborder=0></iframe>
 
 {% endif %}
 

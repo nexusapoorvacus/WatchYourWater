@@ -3,8 +3,8 @@
 <h1>How much water do you use when you do the laundry?</h1>
 <form role="form" id="washerform" action="{{ url_for('recording_data', task='washer') }}" method=post name=washerform>
   <div class="form-group">
-    <label for="washertime">How long did you run the washer for?</label>
-    <input class="form-control" id="washertime" name="washertime" placeholder="Time Length">
+    <label for="washertime">How many loads did you put in the washer?</label>
+    <input class="form-control" id="washertime" name="washertime" placeholder="Number of Loads">
   </div>
   <div class="form-group">
     <label for="washercycle">Cycle Level (Enter: Low, Medium, High)</label>

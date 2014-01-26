@@ -17,6 +17,10 @@ SESSION_USERNAME = ''
 SESSION_PASSWORD = ''
 
 adminmode = True
+ctlistnames = []
+ctlistnames_short = []
+ctlistnumbers = []
+ctlisttimeprop = []
 
 #creating the actual application
 app = Flask(__name__)
@@ -95,13 +99,19 @@ def show_waterconservationtips():
 def show_log():
 	return redirect(url_for('log'))
 
+@app.route('/show_bargraph')
+def show_bargraph():
+	#This bar graph shows spent for each catagory based on the time/loads used
+
+	return render_template("barGraph.html", lstshort=ctlistnames_short, lstnum=ctlistnumbers)
+
 @app.route('/log')
 def log():
+	global ctlistnames_short, ctlistnumbers, ctlistnames, ctlisttimeprop
 	cur = g.db.execute('select Username, Password, currenttask, currenttime, currentproperty, id from entries order by id desc')
 	entries = [dict(Username=row[0], Password=row[1], currenttask=row[2], currenttime=row[3], currentproperty=row[4], id=row[5]) for row in cur.fetchall()][::-1]
 
-	#getting arrays for pie chart
-	ctlistnames = []
+	#getting arrays for charts
 	for i in range(len(entries)):
 		ctlistnames.append(entries[i]["currenttask"])
 	for i in range(len(ctlistnames)):
@@ -111,6 +121,14 @@ def log():
 	lst = Counter(ctlistnames)
 	ctlistnames_short = lst.keys()
 	ctlistnumbers = lst.values()
+	print(ctlistnumbers)
+
+	for i in range(len(entries)):
+		ctlisttimeprop.append((entries[i]["currenttask"], entries[i]["currenttime"], entries[i]["currentproperty"]))
+	for i in range(len(ctlisttimeprop)):
+		for j in range(i + 1, len(ctlisttimeprop)):
+			if ctlisttimeprop[i][0]< ctlisttimeprop[j][0]:
+				ctlisttimeprop[i], ctlisttimeprop[j] = ctlisttimeprop[j], ctlisttimeprop[i]
 
 	return render_template('log.html', entries=entries, adminmode=adminmode, ctlistnames_short=json.dumps(ctlistnames_short),ctlistnames=json.dumps(ctlistnames), ctlistnumbers=json.dumps(ctlistnumbers))
 

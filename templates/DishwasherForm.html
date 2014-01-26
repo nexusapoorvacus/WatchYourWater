@@ -3,8 +3,8 @@
 <h1>How much water does your dishwasher use?</h1>
 <form role="form" id="dishwasherform" action="{{ url_for('recording_data', task='dishwasher') }}" method=post name=dishwasherform>
   <div class="form-group">
-    <label for="dishwashertime">How long does the dishwasher run for (in minutes)?</label>
-    <input class="form-control" id="dishwashertime" name="dishwashertime" placeholder="Time Length">
+    <label for="dishwashertime">How many loads did you put in the dishwasher?</label>
+    <input class="form-control" id="dishwashertime" name="dishwashertime" placeholder="Number of Loads">
   </div>
   <div class="form-group">
     <label for="dishwashercycle">Cycle Level (Enter: Low, Medium, High)</label>
